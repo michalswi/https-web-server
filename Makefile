@@ -39,6 +39,7 @@ docker-build: ## Build docker image
 
 docker-run: ## Run docker
 	docker run --rm -d \
+	--pull \
 	--env SERVER_PORT=$(SERVER_PORT) \
 	-v $(realpath certs):"$(APP_PATH)/certs" \
 	-p $(SERVER_PORT):$(SERVER_PORT) \

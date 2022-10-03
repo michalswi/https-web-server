@@ -26,6 +26,7 @@ func main() {
 
 	http.HandleFunc("/", home)
 	http.HandleFunc("/hz", hz)
+	http.HandleFunc("/ip", ip)
 	logger.Println("Server is ready to handle requests at port", port)
 
 	logger.Fatal(http.ListenAndServeTLS(":"+port, c_file, k_file, nil))
@@ -43,6 +44,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func hz(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("ok"))
+}
+
+func ip(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(r.Header.Get("X-Forwarded-For")))
 }
 
 func getEnv(key, defaultValue string) string {
