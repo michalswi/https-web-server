@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 var logger = log.New(os.Stdout, "web-server ", log.LstdFlags|log.Lshortfile|log.Ltime|log.LUTC)
@@ -16,10 +17,14 @@ func main() {
 	var c_file string
 	var k_file string
 
-	dir, _ := os.ReadDir(cert_path)
+	dir, err := os.ReadDir(cert_path)
+	if err != nil {
+		logger.Fatalf("failed to read cert directory: %v", err)
+	}
+
 	if len(dir) == 2 {
-		c_file = cert_path + "cert.crt"
-		k_file = cert_path + "cert.key"
+		c_file = filepath.Join(cert_path, "cert.crt")
+		k_file = filepath.Join(cert_path, "cert.key")
 	} else {
 		logger.Fatalln("cert and[or] key not provided or sth else!")
 	}
@@ -38,7 +43,11 @@ func home(w http.ResponseWriter, r *http.Request) {
 	x["User-Agent"] = r.UserAgent()
 	x["X-Forwarded-For"] = r.Header.Get("X-Forwarded-For")
 	x["Remote-Addr"] = r.RemoteAddr
-	b, _ := json.Marshal(x)
+	b, err := json.Marshal(x)
+	if err != nil {
+		http.Error(w, "failed to marshal JSON", http.StatusInternalServerError)
+		return
+	}
 	logger.Printf("%s", b)
 }
 

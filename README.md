@@ -9,5 +9,5 @@ $ openssl req -newkey rsa:2048 -nodes -sha256 -x509 -days 365 \
 -subj "/CN=localhost"
 
 $ cd ../
-$ make
+$ make run
 ```
